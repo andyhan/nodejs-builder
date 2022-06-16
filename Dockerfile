@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-    && apk add --update --no-cache \
+# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk add --update --no-cache \
         make \
         g++ \
         jpeg-dev \
@@ -14,4 +14,4 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && rm -rf /var/cache/apk/*
 
 # install pnpm global
-RUN npm i -g pnpm && pnpm config set registry https://registry.npmmirror.com/
+RUN npm i -g pnpm
