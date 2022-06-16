@@ -4,10 +4,7 @@ on:
   push:
     branches:
     - main
-    - release/*
-    
-env:
-  IMAGE_NAME: ${{ github.repository }}
+    - release/*    
   
 jobs:
 
@@ -24,18 +21,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      with:
-        images: |
-          ${{ env.IMAGE_NAME }}
-          ${{ env.IMAGE_NAME }}:16
           
     - name: Build and push Docker image
       id: docker_build
@@ -44,8 +29,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ github.repository }}:latest, ${{ github.repository }}:16
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
