@@ -1,7 +1,8 @@
 FROM node:lts-alpine
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk add --update --no-cache \
+RUN apk update && apk upgrade \
+    && apk add --no-cache \
         make \
         g++ \
         jpeg-dev \
@@ -11,6 +12,8 @@ RUN apk add --update --no-cache \
         libtool \
         autoconf \
         automake \
+        bash \
+        curl \
     && rm -rf /var/cache/apk/*
 
 # install pnpm global
