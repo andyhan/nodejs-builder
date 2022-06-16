@@ -15,22 +15,39 @@ jobs:
     steps:
     - name: Check Out Repo 
       uses: actions/checkout@v3
-
+      
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+        
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Inspect builder
+      run: |
+        echo "Name:      ${{ steps.buildx.outputs.name }}"
+        echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+        echo "Status:    ${{ steps.buildx.outputs.status }}"
+        echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+        echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+            
     - name: Login to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          
+        
     - name: Build and push Docker image
       id: docker_build
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      uses: docker/build-push-action@v3
       with:
-        context: ./
+        context: .
         file: ./Dockerfile
         push: true
+        platforms: linux/amd64,linux/arm64
         tags: ${{ github.repository }}:latest, ${{ github.repository }}:16
 
     - name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
-      
+      run: | 
+        echo "Image ID:      ${{ steps.docker_build.outputs.imageid }}"
+        echo "Image digest:  ${{ steps.docker_build.outputs.digest }}"          
