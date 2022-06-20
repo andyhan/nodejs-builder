@@ -5,6 +5,12 @@ on:
     branches:
     - main
     - release/*    
+    tags:
+      - 'v*'
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}
+  NODE_IMAGE: node:16.15.1-alpine
   
 jobs:
 
@@ -37,16 +43,48 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
         
-    - name: Build and push Docker image
-      id: docker_build
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=schedule
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          
+    - name: Build and Push Versioned Docker Image
+      id: build-and-push
       uses: docker/build-push-action@v3
+      if: ${{ github.ref != 'refs/heads/main' }}
       with:
         context: .
         file: ./Dockerfile
         push: true
         platforms: linux/amd64,linux/arm64
-        tags: ${{ github.repository }}:latest, ${{ github.repository }}:16
-
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          NODE_IMAGE=${{ env.NODE_IMAGE }}
+          
+    - name: Build and Push Latest Docker Image
+      id: build-and-push-latest
+      uses: docker/build-push-action@v3
+      if: ${{ github.ref == 'refs/heads/main' }}
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        platforms: linux/amd64,linux/arm64
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          NODE_IMAGE=${{ env.NODE_IMAGE }}
+          
     - name: Image digest
       run: |
         echo "Image digest:  ${{ steps.docker_build.outputs.digest }}"          
