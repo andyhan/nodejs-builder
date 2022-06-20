@@ -18,5 +18,5 @@ RUN apk update && apk upgrade \
         curl \
     && rm -rf /var/cache/apk/*
 
-# install pnpm yarn globally
-RUN npm i -g pnpm yarn && pnpm --version
+# install pnpm globally
+RUN npm i -g pnpm && pnpm --version
