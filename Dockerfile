@@ -19,4 +19,4 @@ RUN apk update && apk upgrade \
     && rm -rf /var/cache/apk/*
 
 # install pnpm globally
-RUN npm i -g pnpm && pnpm --version
+RUN npm i --location=global pnpm && pnpm --version
