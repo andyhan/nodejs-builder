@@ -1,4 +1,6 @@
-FROM node:lts-alpine
+ARG NODE_IMAGE=node:lts-alpine
+
+FROM ${NODE_IMAGE}
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk upgrade \
@@ -16,5 +18,5 @@ RUN apk update && apk upgrade \
         curl \
     && rm -rf /var/cache/apk/*
 
-# install pnpm global
-RUN npm i -g pnpm
+# install pnpm yarn globally
+RUN npm i -g npm yarn pnpm
