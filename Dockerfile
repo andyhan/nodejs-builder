@@ -20,3 +20,5 @@ RUN apk update && apk upgrade \
 
 # install pnpm globally
 RUN npm i --location=global pnpm && pnpm --version
+
+ENTRYPOINT []
