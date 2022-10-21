@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
-  NODE_IMAGE: node:lts-alpine
+  NODE_IMAGE: node:16.18.0-alpine
   
 jobs:
 
@@ -38,6 +38,7 @@ jobs:
         echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
             
     - name: Login to Docker Hub
+      if: github.event_name != 'pull_request'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -50,6 +51,8 @@ jobs:
         # list of Docker images to use as base name for tags
         images: |
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        flavor: |
+          latest=auto
         # generate Docker tags based on the following events/attributes
         tags: |
           type=schedule
@@ -57,12 +60,12 @@ jobs:
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}          
-          #type=raw,latest
+          type=raw,value=latest,enable={{is_default_branch}}
           
     - name: Build and Push Versioned Docker Image
       id: build-and-push
       uses: docker/build-push-action@v3
-      if: ${{ github.ref != 'refs/heads/main' }}
+      if: ${{ github.ref_type == 'tag' }}
       with:
         context: .
         file: ./Dockerfile
