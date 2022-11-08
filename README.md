@@ -2,6 +2,6 @@
 
 # nodejs-builder with pnpm
 
-**Base Image**: node:lts-alpine 
+**Base Image**: node:lts-alpine
 
 [Docker Hub](https://hub.docker.com/r/andyhan/nodejs-builder)
