@@ -21,6 +21,4 @@ RUN corepack enable \
     && corepack prepare pnpm@latest --activate \
     && pnpm config set --location=global registry "https://registry.npmmirror.com/"
 
-RUN npx --yes npm-config-china@latest
-
 CMD ["pnpm"]
