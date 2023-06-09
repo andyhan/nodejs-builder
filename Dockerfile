@@ -18,11 +18,11 @@ RUN apk update \
     && rm -rf /var/cache/apk/*
 
 # Install pnpm via corepack
-RUN corepack enable \
+RUN npx --yes npm-config-china@latest \
+    && corepack enable \
     && corepack prepare pnpm@latest --activate \
     && pnpm config set --location=global registry "https://registry.npmmirror.com/" \
     && pnpm config set --location=global sharp_binary_host "https://npmmirror.com/mirrors/sharp" \
-    && pnpm config set --location=global sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" \
-    && npx --yes npm-config-china@latest
+    && pnpm config set --location=global sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips"
 
 CMD ["pnpm"]
