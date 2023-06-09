@@ -4,7 +4,7 @@ FROM ${NODE_IMAGE}
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk upgrade \
-    && apk add --no-cache \
+    && apk add --update --no-cache \
         make \
         g++ \
         jpeg-dev \
@@ -13,12 +13,13 @@ RUN apk update && apk upgrade \
         pango-dev \
         libtool \
         autoconf \
-        automake \
-        bash \
-        curl \
+        automake 
     && rm -rf /var/cache/apk/*
 
 # install pnpm globally
-RUN npm i --location=global pnpm && pnpm --version
+# RUN npm i --location=global pnpm
+RUN corepack enable \
+    && corepack prepare pnpm@latest --activate \
+    && pnpm config set --location=global registry https://registry.npmmirror.com/
 
 CMD ["pnpm"]
