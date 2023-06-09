@@ -3,7 +3,8 @@ ARG NODE_IMAGE=node:lts-alpine
 FROM ${NODE_IMAGE}
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk update && apk upgrade \
+RUN apk update 
+    && apk upgrade \
     && apk add --update --no-cache \
         make \
         g++ \
@@ -16,10 +17,12 @@ RUN apk update && apk upgrade \
         automake \
     && rm -rf /var/cache/apk/*
 
-# install pnpm globally
-# RUN npm i --location=global pnpm
+# Install pnpm via corepack
 RUN corepack enable \
     && corepack prepare pnpm@latest --activate \
-    && pnpm config set --location=global registry https://registry.npmmirror.com/
+    && pnpm config set --location=global registry "https://registry.npmmirror.com/" \
+    && pnpm config set --location=global sharp_binary_host "https://npmmirror.com/mirrors/sharp" \
+    && pnpm config set --location=global sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" \
+    && npx --yes npm-config-china@latest
 
 CMD ["pnpm"]
