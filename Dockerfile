@@ -3,7 +3,7 @@ ARG NODE_IMAGE=node:lts-alpine
 FROM ${NODE_IMAGE}
 
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk update 
+RUN apk update \
     && apk upgrade \
     && apk add --update --no-cache \
         make \
