@@ -18,8 +18,7 @@ RUN apk update \
     && rm -rf /var/cache/apk/*
 
 # Install pnpm via corepack
-RUN npx --yes npm-config-china@latest \
-    && corepack enable \
+RUN corepack enable \
     && corepack prepare pnpm@latest --activate \
     && pnpm config set --location=global registry "https://registry.npmmirror.com/" \
     && pnpm config set --location=global sharp_binary_host "https://npmmirror.com/mirrors/sharp" \
