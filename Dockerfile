@@ -13,7 +13,7 @@ RUN apk update && apk upgrade \
         pango-dev \
         libtool \
         autoconf \
-        automake 
+        automake \
     && rm -rf /var/cache/apk/*
 
 # install pnpm globally
