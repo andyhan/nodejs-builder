@@ -18,7 +18,7 @@ RUN apk update && apk upgrade \
 
 # Install pnpm via corepack
 RUN corepack enable \
-    && corepack prepare pnpm@latest-9 --activate \
+    && corepack prepare pnpm@latest-10 --activate \
     && pnpm config set --location=global registry "https://registry.npmmirror.com/"
 
 CMD ["pnpm"]
